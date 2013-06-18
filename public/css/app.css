@@ -1,0 +1,144 @@
+/* app css stylesheet */
+
+/*
+ * NEUTRAL_COLOR = u"#DCDCDC"  # gainsboro
+ * PASS_COLOR    = u"#f0fff0"  # honeydew
+ * FAIL_COLOR    = u"#FFB6C1"  # lightpink
+ * ERROR_COLOR   = u"#FA8072"  # salmon
+ * LOG_COLOR     = u"#DAA520"  # goldenrod
+ * WARNING_COLOR = u"#FFA500"  # orange
+ * FATAL_COLOR   = u"#F08080"  # lightcoral
+ * CASE_COLOR    = u"#90ee90"  # lightgreen
+ */
+
+body {
+  color: #000;
+  padding-top: 10px;
+  padding-left: 10px;
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+
+ul {
+  list-style-type:circle;
+}
+
+.summary-value {
+  color: green;
+}
+
+/* general tables */
+
+table, td, th {
+  border-collapse: collapse;
+  padding: 5px;
+  word-wrap;
+}
+
+td, th {
+  padding-right: 20px;
+}
+
+th {
+  text-align: left;
+  padding-bottom: 10px;
+  border-bottom: 2px solid black;
+}
+
+tr {
+  border-bottom: 1px solid #DCDCDC;
+}
+
+tfoot {
+  border-top: 2px solid black;
+}
+
+tfoot > tr {
+  border: none;
+}
+
+/* specific tables */
+#report-header-row {
+  border: none;
+}
+
+#report-header-row > th {
+  border-bottom: none;
+}
+
+#list-row {
+  border-bottom: none;
+}
+
+#suite-list-box, #job-list-box, #build-list-box {
+  font-size: 14px;
+  width: 200px;
+}
+
+#go-btn {
+  padding: 0;
+  border: 1px black;
+  border-radius: 5px;
+  background: #90F090;
+  width: 100px;
+  height: 50px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: hand;
+  cursor: pointer;
+}
+
+#go-btn:active {
+  background: #208820;
+}
+
+#spacing {
+  height: 20px;
+}
+
+.td-meta-data {
+  border: none;
+}
+
+#job-details, #suite-summary {
+  font-size: 14px;
+}
+
+.inline-table {
+  display: inline-block;
+}
+
+#table-filter {
+  padding: 4px;
+}
+
+#tstcase-results-table {
+  max-width: 70%;
+}
+
+.result-LOG {
+  background-color: #DAA520;
+}
+
+.tst-case-PASS {
+  background-color: #90ee90;
+}
+
+.result-PASS, .result-XFAIL {
+  background-color: #f0fff0;
+}
+
+.result-WARNING, .tst-case-WARNING {
+  background-color: #FFA500;
+}
+
+.result-FAIL, .tst-case-FAIL {
+  background-color: #FFB6C1;
+}
+
+.result-ERROR, .tst-case-ERROR {
+  background-color: #FA8072;
+}
+
+.result-FATAL, .tst-case-FATAL {
+  background-color: #F08080;
+}

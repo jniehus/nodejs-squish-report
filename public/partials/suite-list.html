@@ -1,0 +1,67 @@
+<h2>{{suite.suite_name}}</h2>
+<div class="container-fluid">
+  <div id="suite-meta-data">
+    <table id="job-details">
+      <tbody id="job-meta-data">
+        <tr ng-repeat="(key, value) in suite.job">
+          <td>{{key}}:</td>
+          <td><span class="summary-value">{{value}}</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="spacing"></div>
+
+  <div id="table-filter">Show:
+    <input type="radio" ng-model="filter" value="failures" id="failures" ng-change='newFilterValue(filter)'>
+    <label for="failures">Failures</label>
+    <input type="radio" ng-model="filter" value="passes"   id="passes"   ng-change='newFilterValue(filter)'>
+    <label for="passes">Passes</label>
+    <input type="radio" ng-model="filter" value="all"     id="all"       ng-change='newFilterValue(filter)'>
+    <label for="all">All</label>
+  </div>
+
+  <table id="suite">
+    <thead class="suite-header">
+      <tr>
+        <th><a href="" ng-click="predicate = 'number'; reverse=!reverse">Number</a></th>
+        <th><a href="" ng-click="predicate = 'name'; reverse=!reverse">Name</a></th>
+        <th><a href="" ng-click="predicate = 'time'; reverse=!reverse">Time</a></th>
+        <th><a href="" ng-click="predicate = 'fault_summary'; reverse=!reverse">Fault Summary</a></th>
+      </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <td>Test Cases: <span class="summary-value">{{suite.summary.cases}}</span></td>
+        <td>Passes: <span class="summary-value">{{suite.summary.passes}}</span></td>
+        <td>Errors: <span class="summary-value">{{suite.summary.errors}}</span></td>
+        <td>Expected Fails: <span class="summary-value">{{suite.summary.expected_fails}}</span></td>
+      </tr>
+      <tr>
+        <td>Tests: <span class="summary-value">{{suite.summary.tests}}</span></td>
+        <td>Fails: <span class="summary-value">{{suite.summary.fails}}</span></td>
+        <td>Fatals: <span class="summary-value">{{suite.summary.fatals}}</span></td>
+        <td>Unexpected Passes: <span class="summary-value">{{suite.summary.unexpected_passes}}</span></td>
+      </tr>
+      <tr>
+        <td>Start: <span class="summary-value">{{fancyDate(suite.summary.start)}}</span></td>
+        <td>Finish: <span class="summary-value">{{fancyDate(suite.summary.finish)}}</span></td>
+        <td>Duration: <span class="summary-value">{{duration(suite.summary.start, suite.summary.finish)}}</span></td>
+        <td></td> <!-- void space -->
+      </tr>
+    </tfoot>
+    <tbody id="tst-cases">
+      <tr ng-repeat="tstCase in suite.test_cases | orderBy:predicate:reverse | filter:applyFilter" class="tst-case-{{tstCase.result}}">
+        <td>{{tstCase.number}}</td>
+        <td>
+          <a href="#/report/{{route_params.suite}}/{{route_params.job}}/{{route_params.build}}/{{tstCase.name}}">
+            {{tstCase.name}}
+          </a>
+        </td>
+        <td>{{fancyDate(tstCase.start)}}</td>
+        <td>{{tstCase.fault_summary}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

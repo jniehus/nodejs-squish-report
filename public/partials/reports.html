@@ -1,0 +1,33 @@
+<h2>Squish Report Services</h2>
+<div>
+  <table id="report-collections">
+    <thead class="report-header">
+      <tr id="report-header-row">
+        <th>Suites</th>
+        <th>Jobs</th>
+        <th>Builds</th>
+      </tr>
+    </thead>
+    <tbody id="list-container">
+      <tr id="list-row">
+        <td>
+          <select id="suite-list-box" SIZE="20" ng-model="suite" ng-change="updateJobs()">
+            <option ng-repeat="suite in suites">{{suite}}</option>
+          </select>
+        </td>
+        <td>
+          <select id="job-list-box" SIZE="20" ng-model="job">
+            <option ng-repeat="job in jobs">{{job}}</option>
+          </select>
+        </td>
+        <td>
+          <select id="build-list-box" SIZE="20" ng-model="build">
+            <option ng-repeat="build in reports | filter:applyBuildFilter">{{splitReport(build, 2)}}</option>
+          </select>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <button id="go-btn" ng-click="go()">GO!</button>
+</div>

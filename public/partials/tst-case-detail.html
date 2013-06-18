@@ -1,0 +1,34 @@
+<h2>
+  <a href="#/report/{{route_params.suite}}/{{route_params.job}}/{{route_params.build}}/suite">
+    /{{route_params.suite}}/
+  </a>{{route_params.tst_case}}
+</h2>
+<div id="table-filter">Show:
+  <input type="radio" ng-model="filter" value="failures" id="failures" ng-change='newFilterValue(filter)'>
+  <label for="failures">Failures</label>
+
+  <input type="radio" ng-model="filter" value="passes"   id="passes"   ng-change='newFilterValue(filter)'>
+  <label for="passes">Passes</label>
+
+  <input type="radio" ng-model="filter" value="none"     id="none"     ng-change='newFilterValue(filter)'>
+  <label for="none">All</label>
+</div>
+
+<table id="tstcase-results-table">
+  <thead class="result-header">
+    <tr>
+      <th>Result</th>
+      <th>Description</th>
+      <th>Details</th>
+      <th>File and Line</th>
+    </tr>
+  </thead>
+  <tbody id="tstcase-tests">
+    <tr ng-repeat="test in tstCase.tests | filter:applyFilter" class="result-{{test.type}}">
+      <td>{{test.type}}</td>
+      <td>{{test.description}}</td>
+      <td>{{test.details}}</td>
+      <td>{{test.file_and_line}}</td>
+    </tr>
+  </tbody>
+</table>
