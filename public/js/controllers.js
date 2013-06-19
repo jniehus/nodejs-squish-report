@@ -94,7 +94,7 @@ function SuiteListCtrl($scope, $routeParams, Suite) {
     $scope.route_params = $routeParams;
 
     $scope.loadSuiteData = function() {
-        $scope.suite  = Suite.query();
+        $scope.suite = Suite.query();
     }
 
     $scope.newFilterValue = function(filter) {
