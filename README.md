@@ -20,4 +20,4 @@ Squish reporting services uses node.js and mongodb to store and display squish r
 7. Navigate to __localhost:34000__
   * or whatever port you have chosen
 
-## [http://www.the-dancing-dwarf.com/pub/?p=31 Blog]
+[http://www.the-dancing-dwarf.com/pub/?p=31 Blog]
