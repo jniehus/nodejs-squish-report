@@ -5,8 +5,8 @@ Squish reporting services uses node.js and mongodb to store and display squish r
 
 ## Installation
 ### Prerequisites
-1. Node.js v 0.10.10+
-2. MongoDB v 2.4.3+
+* Node.js v 0.10.10+
+* MongoDB v 2.4.3+
 
 ### Steps
 1. Clone repository to local directory
@@ -19,3 +19,5 @@ Squish reporting services uses node.js and mongodb to store and display squish r
 6. run: __node server.js__
 7. Navigate to __localhost:34000__
   * or whatever port you have chosen
+
+## [http://www.the-dancing-dwarf.com/pub/?p=31 Blog]
