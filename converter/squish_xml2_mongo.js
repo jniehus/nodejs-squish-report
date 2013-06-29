@@ -15,7 +15,7 @@
 var fs = require('fs');
 
 // node packages
-var __db_store  = []
+var db_store    = []
   , REPORT_DB   = "squish_reports"
   , MONGO_PORT  = null
   , xml2js      = require('xml2js')
@@ -24,20 +24,9 @@ var __db_store  = []
 
 
 // helper methods and objects
-var SuiteInfo = function() {
-    if ( SuiteInfo.prototype._singletonInstance ) {
-        return SuiteInfo.prototype._singletonInstance;
-    }
-
-    var self = this;
-    if (typeof self === 'undefined') {
-        self = new SuiteInfo();
-    }
-
-    SuiteInfo.prototype._singletonInstance = self;
-
-    self.name = "suite";
-    self.info = {
+var SuiteInfo = {
+    name: "suite",
+    info: {
         'test_cases': [],
         'summary': {
             'cases':             0,
@@ -51,16 +40,7 @@ var SuiteInfo = function() {
             'fatals':            0
         }
     }
-
-    self.data = function() {
-        var _data = {
-            name: self.name,
-            info: self.info
-        }
-        return _data;
-    }
-};
-var __suite_info_init = new SuiteInfo();
+}
 
 var TstCaseInfo = function(name, tests) {
     this.name = name  || null;
@@ -70,34 +50,34 @@ var TstCaseInfo = function(name, tests) {
 function updateSuiteSummary(data, sum_obj) {
     switch(data['type']) {
     case "PASS":
-        SuiteInfo().info['summary']['tests'] += 1;
-        SuiteInfo().info['summary']['passes'] += 1;
+        SuiteInfo.info['summary']['tests'] += 1;
+        SuiteInfo.info['summary']['passes'] += 1;
         break;
     case "WARNING":
-        SuiteInfo().info['summary']['warnings'] += 1;
+        SuiteInfo.info['summary']['warnings'] += 1;
         sum_obj['Warnings'] += 1;
         break;
     case "FAIL":
-        SuiteInfo().info['summary']['tests'] += 1;
-        SuiteInfo().info['summary']['fails'] += 1;
+        SuiteInfo.info['summary']['tests'] += 1;
+        SuiteInfo.info['summary']['fails'] += 1;
         sum_obj['Fails'] += 1;
         break;
     case "XFAIL":
-        SuiteInfo().info['summary']['tests'] += 1;
-        SuiteInfo().info['summary']['expected_fails'] += 1;
+        SuiteInfo.info['summary']['tests'] += 1;
+        SuiteInfo.info['summary']['expected_fails'] += 1;
         sum_obj['Expected Fails'] += 1;
         break;
     case "XPASS":
-        SuiteInfo().info['summary']['tests'] += 1;
-        SuiteInfo().info['summary']['unexpected_passes'] += 1;
+        SuiteInfo.info['summary']['tests'] += 1;
+        SuiteInfo.info['summary']['unexpected_passes'] += 1;
         sum_obj['Unexpected Passes'] += 1;
         break;
     case "ERROR":
-        SuiteInfo().info['summary']['errors'] += 1;
+        SuiteInfo.info['summary']['errors'] += 1;
         sum_obj['Errors'] += 1;
         break;
     case "FATAL":
-        SuiteInfo().info['summary']['fatals'] += 1;
+        SuiteInfo.info['summary']['fatals'] += 1;
         sum_obj['Fatals'] += 1;
         break;
     }
@@ -191,9 +171,9 @@ function getDetails(detailed_data) {
 }
 
 function storeData() {
-    var suite_name = SuiteInfo().info['suite_name']
-      , job        = SuiteInfo().info['job']['name']
-      , build      = SuiteInfo().info['job']['build_number']
+    var suite_name = SuiteInfo.info['suite_name']
+      , job        = SuiteInfo.info['job']['name']
+      , build      = SuiteInfo.info['job']['build_number']
       , coll       = suite_name + "." + job + ".build_" + build;
 
     var mongoClient = new MongoClient( new MServer('localhost', MONGO_PORT), {db:{strict:true}} );
@@ -203,7 +183,7 @@ function storeData() {
         var db = mongoClient.db(REPORT_DB);
         db.createCollection(coll, {w:1, strict:true}, function(err, collection) {
             if (err) throw err;
-            collection.insert(__db_store, {w:1}, function(err, result) {
+            collection.insert(db_store, {w:1}, function(err, result) {
                 if (err) throw err;
                 mongoClient.close();
             });
@@ -216,7 +196,7 @@ function storeData() {
 // Entry point
 exports.squish_xml2_mongo = function(report, job_meta_data, mongo_port) {
     MONGO_PORT = mongo_port;
-    SuiteInfo().info['job'] = job_meta_data;
+    SuiteInfo.info['job'] = job_meta_data;
 
     // read report file
     fs.readFile(report, function (err, data) {
@@ -236,7 +216,7 @@ function parseReport(squish_xml) {
 function parseSuite(report) {
     var i, len, tst, tests, name, start, stop, num;
     var test_suite     = report.SquishReport.test[0];
-    var suite_info     = SuiteInfo().info;
+    var suite_info     = SuiteInfo.info;
     var report_version = getReportVersion(report);
     if (report_version !== "2.1") {
         throw "Squish report version '" + report_version + "' not supported!";
@@ -249,13 +229,13 @@ function parseSuite(report) {
     tests = getTstCases(test_suite);
     len = tests.length;
     for(i = 0; i < len; ++i) {
-        tst  = tests[i];
+        tst = tests[i];
         num = i+1;
         parseTstCase(tst, (i+1));
     }
 
-    SuiteInfo().info['summary']['cases'] = num;
-    __db_store.push(SuiteInfo().data());
+    SuiteInfo.info['summary']['cases'] = num;
+    db_store.push(SuiteInfo);
 
     storeData();
 }
@@ -300,12 +280,12 @@ function parseTstCase(tst_data, num) {
     tst_summary['result']        = getTstCaseResult(sum_obj);
     tst_case = new TstCaseInfo(tst_summary['name'], tests);
 
-    SuiteInfo().info['test_cases'].push(tst_summary);
-    __db_store.push(tst_case);
+    SuiteInfo.info['test_cases'].push(tst_summary);
+    db_store.push(tst_case);
 }
 
 function parseVerification(ver_data, tests, sum_obj) {
-    var suite_name = SuiteInfo().info['suite_name'];
+    var suite_name = SuiteInfo.info['suite_name'];
     var file = (ver_data['$'].file).split(suite_name)[1];
     var line = ver_data['$'].line;
 
@@ -328,7 +308,7 @@ function parseVerification(ver_data, tests, sum_obj) {
 }
 
 function parseMessage(msg_data, tests, sum_obj) {
-    var suite_name = SuiteInfo().info['suite_name'];
+    var suite_name = SuiteInfo.info['suite_name'];
     var file = (msg_data['$'].file).split(suite_name)[1];
     var line = msg_data['$'].line;
 
